@@ -1,10 +1,29 @@
 package com.alura.literalura.principal;
 
+import com.alura.literalura.modelos.*;
+import com.alura.literalura.repositorio.IAutorRepository;
+import com.alura.literalura.repositorio.ILibroRepository;
+import com.alura.literalura.servicios.AutorServices;
+import com.alura.literalura.servicios.ConsumoApi;
+import com.alura.literalura.servicios.ConvierteDatos;
+import com.alura.literalura.servicios.LibroServices;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class MenuPrincipal {
-    public LibroRepository libroRepository;
-    private AutorRepository autorRepository;
+    public ILibroRepository libroRepository;
+    private IAutorRepository autorRepository;
     private Scanner teclado = new Scanner(System.in);
     private ConsumoApi consumoApi = new ConsumoApi();
     private ConvierteDatos convierteDatos = new ConvierteDatos();
@@ -19,7 +38,7 @@ public class MenuPrincipal {
     private List<Libro> libros;
 
 
-    public MenuPrincipal(LibroRepository libroRepository, AutorRepository autorRepository) {
+    public MenuPrincipal(ILibroRepository libroRepository, IAutorRepository autorRepository) {
         this.autorRepository = autorRepository;
         this.libroRepository = libroRepository;
     }
@@ -29,13 +48,13 @@ public class MenuPrincipal {
 
 
         var textoMenu = """
-                \n Elija un Opción a través del número correspondiente:
+                \n Elija la Opcion que quiera realizar:
                 
                  1  Buscar libro por titulo
-                 2  Listar libro registrados
-                 3  Listar autor registrados
+                 2  Listar libros registrados
+                 3  Listar autores registrados
                  4  Listar autores vivos en un determinado año
-                 5  Listar libro por idioma
+                 5  Listar libros por idioma
                  6  Top 5 libros más descargados
                  7  Listado de libros por autor
                 
@@ -150,8 +169,6 @@ public class MenuPrincipal {
 
     }
 
-
-
     public void hacerPause() {
         System.out.println( );
         Terminal terminal = null;
@@ -186,7 +203,7 @@ public class MenuPrincipal {
             return;
         }
 
-        System.out.println("Se encontraron " + resultsArray.length() + " libros: \n");
+        System.out.println("Se encontraron " + ((JSONArray) resultsArray).length() + " libros: \n");
         for (int i = 0; i < resultsArray.length(); i++) {
             System.out.println(" 1" +
                     "" + (i + 1) + " " + resultsArray.getJSONObject(i).getString("title"));
